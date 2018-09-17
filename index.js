@@ -29,7 +29,6 @@ app.get('/api/styles', (req, res) => {
 		{name: 'Smooth Semi-High Ponytail With Hair Wrap'},
 		{name: 'Messy Low Side Bun With Soft Side-Swept Bang'}
 	];
-
 	res.json(styles);
 });
 
