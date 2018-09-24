@@ -9,7 +9,6 @@ const router = express.Router();
 
 // Get all
 router.get('/', (req, res, next) => {
-
 	Style.find()
 		.then(results => {
 			res.json(results);
