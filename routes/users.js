@@ -1,10 +1,13 @@
 'use strict';
 const express = require('express');
-const User = require('../models/user');
-
 const bodyParser = require('body-parser');
+const User = require('../models/user');
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
+
+const jwtAuth = passport.authenticate('jwt', {session: false});
 
 const jsonParser = bodyParser.json();
 
@@ -69,5 +72,27 @@ router.post('/', jsonParser, (req, res) => {
 			res.status(500).json({ code: 500, message: 'Internal server error' });
 		});
 });
+
+// PUT new style to user favorites
+router.put('/style/:styleId', jwtAuth, (req, res, next) => {
+  const styleId = req.params.styleId;
+  User.findOneAndUpdate({'username': req.user.username}, {
+    $push: { favorites: styleId }
+  }, {new: true})
+    .then(result => {
+
+      if (result) {
+        res.json(result);
+      } else {
+        next();
+      }
+    }).catch(err => {
+      console.error(err);
+      next(err);
+    });
+
+});
+
+
 
 module.exports = router;
