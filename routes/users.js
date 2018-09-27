@@ -94,12 +94,12 @@ router.put('/style/:styleId', jwtAuth, (req, res, next) => {
 });
 
 // GET user favorites
-router.get('/:userId/favorites', jwtAuth, (req, res, next) => {
+router.get('/:username/favorites', jwtAuth, (req, res, next) => {
 	// need to find user.favorites, then res that to client
-	const userId = req.params.userId;
-	console.log('userId: ',userId);
-	console.log('User: ',User)
-	User.find({userId})
+	const username = req.params.username;
+	console.log('username:',username)
+	User.find({username})
+	// need to send back just favorites array, not entire user object
 	.then(results => {
 			res.json(results);
 		})
@@ -107,18 +107,6 @@ router.get('/:userId/favorites', jwtAuth, (req, res, next) => {
 			next(err);
 		});
 })
-
-
-// model.find({
-//     '_id': { $in: [
-//         mongoose.Types.ObjectId('4ed3ede8844f0f351100000c'),
-//         mongoose.Types.ObjectId('4ed3f117a844e0471100000d'), 
-//         mongoose.Types.ObjectId('4ed3f18132f50c491100000e')
-//     ]}
-// }, function(err, docs){
-//      console.log(docs);
-// });
-
 
 
 module.exports = router;

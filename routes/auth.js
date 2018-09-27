@@ -18,10 +18,10 @@ function createAuthToken(user) {
 }
 
 router.post('/login', localAuth, (req, res) => {
-	console.log('neill look here')
 	const authToken = createAuthToken(req.user);
-	console.log(res);
-	res.json({ authToken });
+	// want to send usedId back as well
+	const userId = req.user.id;
+	res.json({ authToken, userId });
 });
 
 const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: true });

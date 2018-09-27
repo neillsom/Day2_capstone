@@ -18,17 +18,18 @@ const createAuthToken = function(user) {
 const localAuth = passport.authenticate('local', { session: false });
 router.use(bodyParser.json());
 // The user provides a username and password to login
+
+// Login
 router.post('/login', localAuth, (req, res) => {
-	console.log(req.user);
+	const userId = req.user.id
 	const authToken = createAuthToken(req.user.serialize());
-	res.json({ authToken });
+	res.json({ authToken, userId });
 });
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 // The user exchanges a valid JWT for a new one with a later expiration
 router.post('/refresh', jwtAuth, (req, res) => {
-	console.log(req.user);
 	const authToken = createAuthToken(req.user);
 	res.json({ authToken });
 });
