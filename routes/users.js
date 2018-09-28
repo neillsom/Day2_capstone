@@ -90,7 +90,6 @@ router.put('/style/:styleId', jwtAuth, (req, res, next) => {
       console.error(err);
       next(err);
     });
-
 });
 
 // GET user favorites
@@ -98,10 +97,12 @@ router.get('/:username/favorites', jwtAuth, (req, res, next) => {
 	// need to find user.favorites, then res that to client
 	const username = req.params.username;
 	console.log('username:',username)
-	User.find({username})
-	// need to send back just favorites array, not entire user object
+
+	User.findOne({username: username}, 'favorites')
+	// need to send back just favorites array, not include id as well
 	.then(results => {
 			res.json(results);
+			console.log(results)
 		})
 		.catch(err => {
 			next(err);
