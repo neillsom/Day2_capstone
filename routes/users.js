@@ -92,13 +92,35 @@ router.put('/style/:styleId', jwtAuth, (req, res, next) => {
     });
 });
 
+// Remove style from user favorites
+router.put('/style/remove/:styleId', jwtAuth, (req, res, next) => {
+  const styleId = req.params.styleId;
+  User.findOneAndUpdate({'username': req.user.username}, {
+    $pull: { favorites: styleId }
+  }, {new: true})
+    .then(result => {
+
+      if (result) {
+        res.json(result);
+      } else {
+        next();
+      }
+    }).catch(err => {
+      console.error(err);
+      next(err);
+    });
+});
+
+
+
+
 // GET user favorites
 router.get('/:username/favorites', jwtAuth, (req, res, next) => {
 	// need to find user.favorites, then res that to client
 	const username = req.params.username;
-	console.log('username:',username)
 
-	User.findOne({username: username}, 'favorites')
+	// User.findOne({username: username}, 'favorites')
+	User.findOne({username: username})
 	// need to send back just favorites array, not include id as well
 	.then(results => {
 			res.json(results);
