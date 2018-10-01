@@ -50,7 +50,7 @@ app.get('/dashboard', jwtAuth, (req, res) => {
 });
 
 app.get('/', (req, res) => {
-	res.json('Nothing to see here. Maybe try http://localhost:8080/styles');
+	res.json('Nothing to see here!');
 });
 
 function runServer(port = PORT) {
