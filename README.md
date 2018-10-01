@@ -10,13 +10,16 @@ The project was created for my wife who often goes a day or two between hair was
 - [Server code repository](https://github.com/neillsom/Day2_capstone-server) 
 - [Client code repository](https://github.com/neillsom/Day2_capstone-client)
 ## Screenshots
-Day2 Style List: ![Day2 Style List](https://c2.staticflickr.com/2/1962/30088944857_a7fbe7ef25_o.jpg)
+Day2 Style List:
 
-Day2 Login Page: 
+![Day2 Style List](https://c2.staticflickr.com/2/1962/30088944857_a7fbe7ef25_o.jpg)
+
+Day2 Login Page:
+
 ![Day2 Login Page](https://c2.staticflickr.com/2/1920/30088945017_96e7a68831_o.jpg)
 
-
 Day2 User Favorites:
+
 ![Day2 User Favorites](https://c2.staticflickr.com/2/1951/31152388578_d3b2ff7571_o.jpg)
 
 ## Tech Used
@@ -42,40 +45,6 @@ Day2 User Favorites:
 ### Deployment
 -   Heroku
 -   mLab
--   Netlify
-
-## Running Locally
-### Backend
--   Clone the backend repository:  `git clone https://github.com/neillsom/day2-server.git`
--   Move into the project directory:  `cd day2-server`
--   Install the dependencies:  `npm install`
--   Run the development task:  `npm start`
-    -   Starts a server running at  [http://localhost:8080](http://localhost:8080/)
-### Frontend
-- Clone the frontend repository: `git clone https://github.com/neillsom/day2-client.git`
-- Move into the project directory:  `cd day2-client`
--   Install the dependencies:  `npm install`
--   Run the development task:  `npm start`
-    -   Starts a server running at  [http://localhost:3000](http://localhost:3000/)
-
-## Resources
-### Users (/users)
--   GET
-    -   Get user favorites
--   POST
-    -   Register new user
-### Auth (users/login)
--   POST
-    -   Login existing user and returns an authToken
-### Styles (/styles)
--   GET
-    -   Unfiltered results if not logged in
-
-### Add to favorites (users/:id/favorites)
-- GET
-  - Filtered favorites returned
-- PUT
-  - Pushes style ID to user favorites list
 
 ## Code Examples
 
