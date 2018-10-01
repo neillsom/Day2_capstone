@@ -1,45 +1,199 @@
-# Thinkful Backend Template
 
-A template for developing and deploying Node.js apps.
+# Day2 Hair
 
-## Getting started
+Day2 is a simple hairstyle recommender for times when you need a little inspiration. Style options can change depending on the length of one's hair, and how long it's been since the last wash. Day2 allows the user to create an account, and filter styles by length and clean/dirty status. Once the filtered results are displayed the user can 'favorite' a style to view later.
 
-### Setting up a project
+The project was created for my wife who often goes a day or two between hair washings. Since she needs to look professional and fashion forward for her job, coming up with new styles everyday can be a chore. With Day2 one can spend less time searching Pinterest in the morning for inspiration and get styling faster!
 
-* Move into your projects directory: `cd ~/YOUR_PROJECTS_DIRECTORY`
-* Clone this repository: `git clone https://github.com/Thinkful-Ed/backend-template YOUR_PROJECT_NAME`
-* Move into the project directory: `cd YOUR_PROJECT_NAME`
-* Install the dependencies: `npm install`
-* Create a new repo on GitHub: https://github.com/new
-    * Make sure the "Initialize this repository with a README" option is left unchecked
-* Update the remote to point to your GitHub repository: `git remote set-url origin https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPOSITORY_NAME`
+## Project Links
+- [Live application](https://day2-capstone-client.herokuapp.com/)
+- [Server code repository](https://github.com/neillsom/Day2_capstone-server) 
+- [Client code repository](https://github.com/neillsom/Day2_capstone-client)
+## Screenshots
+Day2 Style List: ![Day2 Style List](https://c2.staticflickr.com/2/1962/30088944857_a7fbe7ef25_o.jpg)
 
-### Working on the project
+Day2 Login Page: 
+![Day2 Login Page](https://c2.staticflickr.com/2/1920/30088945017_96e7a68831_o.jpg)
 
-* Move into the project directory: `cd ~/YOUR_PROJECTS_DIRECTORY/YOUR_PROJECT_NAME`
-* Run the development task: `npm start`
-    * Starts a server running at http://localhost:8080
-    * Automatically restarts when any of your files change
 
-## Databases
+Day2 User Favorites:
+![Day2 User Favorites](https://c2.staticflickr.com/2/1951/31152388578_d3b2ff7571_o.jpg)
 
-By default, the template is configured to connect to a MongoDB database using Mongoose.  It can be changed to connect to a PostgreSQL database using Knex by replacing any imports of `db-mongoose.js` with imports of `db-knex.js`, and uncommenting the Postgres `DATABASE_URL` lines in `config.js`.
+## Tech Used
 
-## Deployment
+### Front-End
+-   React
+-   Redux
+-   HTML
+-   CSS
 
-Requires the [Heroku CLI client](https://devcenter.heroku.com/articles/heroku-command-line).
+### Back-End
+-   Node
+-   Express
+-   MongoDB
+-   Mongoose
+-   Passport
+-   Bcrypt
 
-### Setting up the project on Heroku
+### Testing and Deployment
+-   Mocha
+-   Chai
 
-* Move into the project directory: `cd ~/YOUR_PROJECTS_DIRECTORY/YOUR_PROJECT_NAME`
-* Create the Heroku app: `heroku create PROJECT_NAME`
+### Deployment
+-   Heroku
+-   mLab
+-   Netlify
 
-* If your backend connects to a database, you need to configure the database URL:
-    * For a MongoDB database: `heroku config:set DATABASE_URL=mongodb://USERNAME:PASSWORD@HOST:PORT/DATABASE_NAME`
-    * For a PostgreSQL database: `heroku config:set DATABASE_URL=postgresql://USERNAME:PASSWORD@HOST:PORT/DATABASE_NAME`
+## Running Locally
+### Backend
+-   Clone the backend repository:  `git clone https://github.com/neillsom/day2-server.git`
+-   Move into the project directory:  `cd day2-server`
+-   Install the dependencies:  `npm install`
+-   Run the development task:  `npm start`
+    -   Starts a server running at  [http://localhost:8080](http://localhost:8080/)
+### Frontend
+- Clone the frontend repository: `git clone https://github.com/neillsom/day2-client.git`
+- Move into the project directory:  `cd day2-client`
+-   Install the dependencies:  `npm install`
+-   Run the development task:  `npm start`
+    -   Starts a server running at  [http://localhost:3000](http://localhost:3000/)
 
-* If you are creating a full-stack app, you need to configure the client origin: `heroku config:set CLIENT_ORIGIN=https://www.YOUR_DEPLOYED_CLIENT.com`
+## Resources
+### Users (/users)
+-   GET
+    -   Get user favorites
+-   POST
+    -   Register new user
+### Auth (users/login)
+-   POST
+    -   Login existing user and returns an authToken
+### Styles (/styles)
+-   GET
+    -   Unfiltered results if not logged in
 
-### Deploying to Heroku
+### Add to favorites (users/:id/favorites)
+- GET
+  - Filtered favorites returned
+- PUT
+  - Pushes style ID to user favorites list
 
-* Push your code to Heroku: `git push heroku master`
+## Code Examples
+
+### User endpoints for adding and removing favorites
+```javascript
+// PUT new style to user favorites
+router.put('/style/:styleId', jwtAuth, (req, res, next) => {
+  const styleId = req.params.styleId;
+  User.findOneAndUpdate({'username': req.user.username}, {
+    $push: { favorites: styleId }
+  }, {new: true})
+    .then(result => {
+
+      if (result) {
+        res.json(result);
+      } else {
+        next();
+      }
+    }).catch(err => {
+      console.error(err);
+      next(err);
+    });
+});
+
+// Remove style from user favorites
+router.put('/style/remove/:styleId', jwtAuth, (req, res, next) => {
+  const styleId = req.params.styleId;
+  User.findOneAndUpdate({'username': req.user.username}, {
+    $pull: { favorites: styleId }
+  }, {new: true})
+    .then(result => {
+
+      if (result) {
+        res.json(result);
+      } else {
+        next();
+      }
+    }).catch(err => {
+      console.error(err);
+      next(err);
+    });
+});
+```
+
+### Style List component
+```javascript
+import React from 'react';
+import { connect } from 'react-redux';
+import { fetchStylesFromApi, addToFavorites } from '../actions/styles'
+import './styles/style-list.css'
+
+class StyleList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      styles: props.styles
+    }
+  }
+
+  componentDidMount() {
+    this.props.dispatch(fetchStylesFromApi())
+  }
+
+  render() {
+    const styles = this.props.styles.map((style, index) =>
+      <section key={index} className="card">
+
+        <figure className="card__thumbnail">
+          <img src={style.imgUrl} alt={style.title} />
+          <main className="card__description">
+            <header className="card__title">
+              <h3>{style.title}</h3>
+            </header>
+            <p>Length: {style.length}</p>
+          </main>
+        </figure>
+        <a href="#" className="button"
+          onClick={() => this.props.dispatch(addToFavorites(style.id, localStorage.getItem('authToken')))}
+          name="add-to-favorites">Add to favorites
+        </a>
+
+      </section>
+    )
+
+    return (
+      <div className="card-container">
+        {styles}
+      </div>
+    )
+
+  }
+}
+
+const mapStateToProps = state => ({
+  styles: state.style.styles
+})
+
+export default connect(mapStateToProps)(StyleList)
+```
+## Installation
+- Set up Server
+  - Clone the server repository: `git clone https://github.com/neillsom/Day2_capstone-server.git YOUR_SERVER_PROJECT_NAME`
+  - Move into the project directory: `cd YOUR_SERVER_PROJECT_NAME`
+  - Install dependencies: `npm install`
+  - Start the server: `npm start`
+- Set up Client
+  - Clone the client repository: `git clone https://github.com/neillsom/Day2_capstone-client.git YOUR_CLIENT_PROJECT_NAME`
+  - Move into the project directory: `cd YOUR_CLIENT_PROJECT_NAME`
+  - Install dependencies: `npm install`
+  - Start the client: `npm start`
+  - React should open a new browser window pointing to [localhost:3000](localhost:3000). If it does not, simply visit the address in the browser. 
+- Set up local database
+  - Start Mongo database: `mongod`
+  - Seed database:
+    - From `YOUR_SERVER_PROJECT_NAME` directory: `node db/seed/questions.json`
+
+## License
+MIT License
+Copyright (c) 2018 Neill Somerville
+
+#### http://neillsomerville.com
