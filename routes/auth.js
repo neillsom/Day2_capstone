@@ -19,7 +19,6 @@ function createAuthToken(user) {
 
 router.post('/login', localAuth, (req, res) => {
 	const authToken = createAuthToken(req.user);
-	// want to send usedId back as well
 	const userId = req.user.id;
 	res.json({ authToken, userId });
 });

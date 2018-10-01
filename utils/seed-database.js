@@ -11,7 +11,7 @@ const seedUsers = require('../db/seed/users');
 
 console.log(DATABASE_URL);
 
-mongoose.connect(DATABASE_URL)
+mongoose.connect(DATABASE_URL, { useNewUrlParser: true })
 	.then(() => mongoose.connection.db.dropDatabase())
 	.then(() => {
 		return Promise.all([
